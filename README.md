@@ -49,13 +49,5 @@ The goal of this project is to build a personalized AI real estate assistant tha
 
 ---
 
-## 🚀 Getting Started
-
-### 🔧 Setup
-
-1. **Clone the repository**
-```bash
-git clone https://github.com/yourusername/real-estate-agent.git
-cd real-estate-agent
 
 
