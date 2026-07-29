@@ -49,6 +49,7 @@ Portfolio-ready GenAI project built from the **Udacity Generative AI Nanodegree*
 - **Dependency injection (DI)** via a lightweight container (`src/infrastructure/container.py`) to keep wiring separate from logic.
 - **Async-first interface** (`async def recommend(...)`) and **unit tests** with `pytest` for critical logic.
 - **Security hardening**: sanitizes untrusted user preferences before they are inserted into prompts.
+- **Streamlit recruiter demo UI** with multi-step preference capture, top-3 property cards, and one-click listing regeneration.
 
 ---
 
@@ -78,6 +79,11 @@ python main.py
 **Demo mode** (uses preset preferences):
 ```bash
 python HomeMatch.py
+```
+
+**Streamlit UI** (recommended for portfolio demos):
+```bash
+streamlit run src/frontend/app.py
 ```
 
 ---
