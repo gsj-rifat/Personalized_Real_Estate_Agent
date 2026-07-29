@@ -3,6 +3,8 @@ import streamlit as st
 
 from src.core.entities.models import BuyerPreferences
 from src.infrastructure.container import AppContainer
+from src.infrastructure.config import get_settings
+from src.frontend.matching import top_listing_matches
 
 
 QUESTIONS = [
@@ -79,6 +81,32 @@ def _review_step() -> None:
         st.success("Recommendation generated.")
 
     if st.session_state.recommendation:
+        preferences = _build_preferences()
+        matches = top_listing_matches(get_settings().data_path, preferences.to_query(), limit=3)
+
+        st.subheader("Top 3 Listing Matches")
+        if not matches:
+            st.info("No ranked listing matches available yet.")
+        else:
+            cols = st.columns(3)
+            for idx, match in enumerate(matches):
+                with cols[idx]:
+                    score_pct = int(match.score * 100)
+                    st.markdown(
+                        f"""
+                        <div style="border:1px solid #d0d7de;border-radius:12px;padding:14px;">
+                        <h4 style="margin-top:0;">{match.neighborhood}</h4>
+                        <p><strong>Location:</strong> {match.location}</p>
+                        <p><strong>Bedrooms:</strong> {match.bedrooms} | <strong>Bathrooms:</strong> {match.bathrooms}</p>
+                        <p><strong>Size:</strong> {match.house_size_sqft} sqft</p>
+                        <p><strong>Price:</strong> ${match.price_k_usd:.0f}k</p>
+                        <p><span style="background:#e8f0fe;padding:4px 8px;border-radius:999px;">
+                        Match Score: {score_pct}%</span></p>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
         st.subheader("Personalized Recommendation")
         st.write(st.session_state.recommendation)
 
