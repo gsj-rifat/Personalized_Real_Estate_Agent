@@ -4,16 +4,15 @@ Prompts the user with 5 questions then returns a personalized home recommendatio
 """
 import asyncio
 
-from src.adapters.preference_collector import CLIPreferenceCollector
-from src.adapters.recommendation_engine import LangChainRecommendationEngine
+from src.infrastructure.container import AppContainer
 
 
 async def main() -> None:
-    collector = CLIPreferenceCollector()
-    engine = LangChainRecommendationEngine()
+    container = AppContainer.create_cli()
+    await container.ensure_home_listings()
 
-    preferences = collector.collect()
-    result = await engine.recommend(preferences)
+    preferences = container.collector.collect()
+    result = await container.engine.recommend(preferences)
 
     print("\nPersonalized Recommendation:\n")
     print(result.answer)

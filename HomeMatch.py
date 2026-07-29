@@ -4,8 +4,7 @@ Uses StaticPreferenceCollector for demo; swap for CLIPreferenceCollector for liv
 """
 import asyncio
 
-from src.adapters.preference_collector import StaticPreferenceCollector
-from src.adapters.recommendation_engine import LangChainRecommendationEngine
+from src.infrastructure.container import AppContainer
 from src.core.entities.models import BuyerPreferences
 
 
@@ -19,11 +18,11 @@ DEMO_PREFERENCES = BuyerPreferences(
 
 
 async def main() -> None:
-    collector = StaticPreferenceCollector(DEMO_PREFERENCES)
-    engine = LangChainRecommendationEngine()
+    container = AppContainer.create_demo(preferences=DEMO_PREFERENCES)
+    await container.ensure_home_listings()
 
-    preferences = collector.collect()
-    result = await engine.recommend(preferences)
+    preferences = container.collector.collect()
+    result = await container.engine.recommend(preferences)
 
     print("\nPersonalized Recommendation:\n")
     print(result.answer)

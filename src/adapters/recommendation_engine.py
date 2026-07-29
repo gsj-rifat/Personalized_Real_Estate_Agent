@@ -9,32 +9,31 @@ from langchain.chains import ConversationalRetrievalChain
 
 from src.core.interfaces.base import IRecommendationEngine
 from src.core.entities.models import BuyerPreferences, RecommendationResult
-from src.infrastructure.config import get_settings
+from src.infrastructure.config import Settings, get_settings
 from src.infrastructure.prompts import RECOMMENDATION_TEMPLATE, sanitize_user_text
 
 
 class LangChainRecommendationEngine(IRecommendationEngine):
     """RAG-based recommendation engine using LangChain + ChromaDB."""
 
-    def __init__(self) -> None:
-        settings = get_settings()
+    def __init__(self, *, settings: Settings | None = None) -> None:
+        self._settings = settings or get_settings()
         self._llm = ChatOpenAI(
-            model=settings.llm_model,
-            temperature=settings.llm_temperature,
-            max_tokens=settings.llm_max_tokens,
-            api_key=settings.openai_api_key,
+            model=self._settings.llm_model,
+            temperature=self._settings.llm_temperature,
+            max_tokens=self._settings.llm_max_tokens,
+            api_key=self._settings.openai_api_key,
         )
         self._chain: ConversationalRetrievalChain | None = None
 
     def _build_chain(self, preferences: BuyerPreferences) -> ConversationalRetrievalChain:
-        settings = get_settings()
-        docs = CSVLoader(file_path=settings.data_path).load()
+        docs = CSVLoader(file_path=self._settings.data_path).load()
         split_docs = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0).split_documents(docs)
-        embedding = OpenAIEmbeddings(api_key=settings.openai_api_key)
+        embedding = OpenAIEmbeddings(api_key=self._settings.openai_api_key)
         retriever = Chroma.from_documents(
             documents=split_docs,
             embedding=embedding,
-            persist_directory=settings.db_path,
+            persist_directory=self._settings.db_path,
         ).as_retriever()
 
         history = ChatMessageHistory()

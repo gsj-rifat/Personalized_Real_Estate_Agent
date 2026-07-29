@@ -4,15 +4,15 @@ from pathlib import Path
 from langchain_openai import ChatOpenAI
 
 from src.core.interfaces.base import IListingGenerator
-from src.infrastructure.config import get_settings
+from src.infrastructure.config import Settings, get_settings
 from src.infrastructure.prompts import LISTING_GENERATION_TEMPLATE
 
 
 class LLMHomeListingGenerator(IListingGenerator):
     """Generates the home listings CSV using the configured LLM."""
 
-    def __init__(self) -> None:
-        self._settings = get_settings()
+    def __init__(self, *, settings: Settings | None = None) -> None:
+        self._settings = settings or get_settings()
         self._llm = ChatOpenAI(
             model=self._settings.llm_model,
             temperature=0.2,
