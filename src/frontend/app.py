@@ -120,7 +120,6 @@ def _review_step() -> None:
 def main() -> None:
     st.set_page_config(page_title="HomeMatch", page_icon="🏡", layout="wide")
     st.title("HomeMatch - Personalized Real Estate Assistant")
-    st.caption("Recruiter demo UI built with Streamlit")
     _init_state()
     with st.sidebar:
         st.header("Data Controls")

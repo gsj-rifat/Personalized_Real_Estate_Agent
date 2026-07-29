@@ -5,11 +5,27 @@ It started from the **Udacity Generative AI Nanodegree** project outline and was
 
 ---
 
+## Overview
+
+HomeMatch collects buyer preferences through a guided flow, retrieves relevant listings from a vector store, and generates a personalized recommendation with ranked property matches.
+
+![HomeMatch UI](Screenshot/Demo-UI.JPG)
+
+---
+
+## Screenshots
+
+| Preference flow | Review & results |
+|-----------------|------------------|
+| ![Step 1](Screenshot/Demo-q1.JPG) | ![Step 2](Screenshot/Demo-q2.JPG) |
+
+---
+
 ## Why This Project Matters
 
 - Translates open-ended user preferences into ranked home options and a tailored recommendation.
-- Demonstrates practical LLM engineering patterns recruiters look for: modular architecture, security guards, and test coverage.
-- Includes a Streamlit interface for quick, interview-friendly demos.
+- Demonstrates practical LLM engineering patterns: modular architecture, security guards, and test coverage.
+- Includes a Streamlit interface for interactive demos.
 
 ---
 
@@ -36,11 +52,10 @@ It started from the **Udacity Generative AI Nanodegree** project outline and was
 - **Dependency injection:** Central wiring via `src/infrastructure/container.py`.
 
 Architecture diagram: see `docs/ARCHITECTURE.md`.
-Demo walkthrough: see `docs/RECRUITER_DEMO_GUIDE.md`.
 
 ---
 
-## Quick Demo (Recommended)
+## Quick Start
 
 1. Install dependencies
 ```bash
@@ -66,6 +81,14 @@ python HomeMatch.py
 
 ---
 
+## What I Learned
+
+- How to convert a notebook-style prototype into layered production code.
+- How to make LLM apps safer and easier to maintain through typed contracts and validation.
+- How pairing backend quality with an interactive frontend improves the overall product experience.
+
+---
+
 ## Tech Stack
 
 | Tool | Purpose |
@@ -76,7 +99,7 @@ python HomeMatch.py
 | langchain-community | CSV loader and Chroma vector store adapters |
 | ChromaDB | Vector database for semantic retrieval |
 | Pydantic v2 + pydantic-settings | Typed contracts and config validation |
-| Streamlit | Recruiter-facing interactive frontend |
+| Streamlit | Interactive web frontend |
 | Pytest | Unit testing |
 
 ---
