@@ -36,6 +36,7 @@ It started from the **Udacity Generative AI Nanodegree** project outline and was
 - **Dependency injection:** Central wiring via `src/infrastructure/container.py`.
 
 Architecture diagram: see `docs/ARCHITECTURE.md`.
+Demo walkthrough: see `docs/RECRUITER_DEMO_GUIDE.md`.
 
 ---
 
