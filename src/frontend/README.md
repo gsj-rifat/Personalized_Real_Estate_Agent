@@ -1,6 +1,6 @@
 # Frontend
 
-Streamlit UI for recruiter-friendly demos.
+Streamlit UI for interactive demos.
 
 ## Run
 

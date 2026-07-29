@@ -1,4 +1,4 @@
-# Architecture (Recruiter-Friendly)
+# Architecture
 
 ## Overview
 This project is a small GenAI-native application that recommends real-estate homes using:
