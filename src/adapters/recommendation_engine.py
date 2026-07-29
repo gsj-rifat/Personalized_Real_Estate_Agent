@@ -9,14 +9,15 @@ from langchain.chains import ConversationalRetrievalChain
 
 from src.core.interfaces.base import IRecommendationEngine
 from src.core.entities.models import BuyerPreferences, RecommendationResult
-from src.infrastructure.config import settings
-from src.infrastructure.prompts import RECOMMENDATION_TEMPLATE
+from src.infrastructure.config import get_settings
+from src.infrastructure.prompts import RECOMMENDATION_TEMPLATE, sanitize_user_text
 
 
 class LangChainRecommendationEngine(IRecommendationEngine):
     """RAG-based recommendation engine using LangChain + ChromaDB."""
 
     def __init__(self) -> None:
+        settings = get_settings()
         self._llm = ChatOpenAI(
             model=settings.llm_model,
             temperature=settings.llm_temperature,
@@ -26,6 +27,7 @@ class LangChainRecommendationEngine(IRecommendationEngine):
         self._chain: ConversationalRetrievalChain | None = None
 
     def _build_chain(self, preferences: BuyerPreferences) -> ConversationalRetrievalChain:
+        settings = get_settings()
         docs = CSVLoader(file_path=settings.data_path).load()
         split_docs = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0).split_documents(docs)
         embedding = OpenAIEmbeddings(api_key=settings.openai_api_key)
@@ -39,7 +41,8 @@ class LangChainRecommendationEngine(IRecommendationEngine):
         history.add_user_message(
             "You are an AI sales assistant. Summarize buyer home preferences."
         )
-        history.add_ai_message(preferences.to_query())
+        safe_preferences = sanitize_user_text(preferences.to_query())
+        history.add_ai_message(safe_preferences)
 
         memory = ConversationSummaryMemory(
             llm=self._llm,
@@ -64,5 +67,5 @@ class LangChainRecommendationEngine(IRecommendationEngine):
     async def recommend(self, preferences: BuyerPreferences) -> RecommendationResult:
         chain = await asyncio.to_thread(self._build_chain, preferences)
         query = "As a sales assistant, show the best matching home for this user in an appealing format."
-        result = await asyncio.to_thread(chain, {"question": query})
+        result = await chain.ainvoke({"question": query})
         return RecommendationResult(answer=result["answer"], query=query)
