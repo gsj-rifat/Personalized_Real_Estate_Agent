@@ -1,14 +1,15 @@
 # HomeMatch — AI-Powered Personalized Real Estate Agent
 
-An AI assistant that understands buyer preferences through conversation and recommends the best matching home using semantic search and LLMs.
+Portfolio-ready GenAI project built from the **Udacity Generative AI Nanodegree** course outline and refactored into a recruiter-friendly, production-minded Python app.
 
 ---
 
 ## How It Works
 
 1. **Preference Collection** — The agent asks 5 questions about size, priorities, amenities, transport, and neighborhood type.
-2. **Semantic Embedding** — Home listings from `data/home.csv` are embedded with `OpenAIEmbeddings` and stored in ChromaDB.
-3. **RAG Recommendation** — The buyer's preferences are used as a semantic query; the best matching listing is retrieved and narrated by `ChatOpenAI`.
+2. **Resilient Data Bootstrap** — On startup, the app checks `data/home.csv` and **auto-generates it** if missing.
+3. **Semantic Embedding** — Home listings are embedded with `OpenAIEmbeddings` and stored in ChromaDB.
+4. **RAG Recommendation** — The buyer's (sanitized) preferences are used as a semantic query; the best matching listing is retrieved and narrated by `ChatOpenAI`.
 
 ---
 
@@ -16,12 +17,14 @@ An AI assistant that understands buyer preferences through conversation and reco
 
 ```
 ├── directives/              # Architecture SOPs
+├── docs/                     # Recruiter-facing architecture docs
 ├── src/
 │   ├── core/
 │   │   ├── entities/        # Pydantic data contracts (BuyerPreferences, HomeListing)
 │   │   ├── interfaces/      # ABCs (IPreferenceCollector, IRecommendationEngine)
 │   │   └── logic/           # Pure business logic (reserved)
 │   ├── adapters/            # Concrete implementations
+│   │   ├── listing_generator.py  # LLM-based CSV bootstrap
 │   │   ├── preference_collector.py   # CLI + Static collectors
 │   │   └── recommendation_engine.py  # LangChain RAG engine
 │   └── infrastructure/
@@ -39,6 +42,16 @@ An AI assistant that understands buyer preferences through conversation and reco
 
 ---
 
+## Portfolio Highlights
+
+- **RAG with LangChain + ChromaDB** to retrieve the best matching listing and generate a concise recommendation.
+- **Fail-fast configuration** with `pydantic-settings` so missing/placeholder secrets surface immediately.
+- **Dependency injection (DI)** via a lightweight container (`src/infrastructure/container.py`) to keep wiring separate from logic.
+- **Async-first interface** (`async def recommend(...)`) and **unit tests** with `pytest` for critical logic.
+- **Security hardening**: sanitizes untrusted user preferences before they are inserted into prompts.
+
+---
+
 ## Setup
 
 ### 1. Install dependencies
@@ -53,7 +66,7 @@ cp .env.example .env
 ```
 
 ### 3. Generate home listings (first time)
-Open `HomeMatch.ipynb` and run the data generation cell to create `data/home.csv`.
+If `data/home.csv` is missing, the app will auto-generate it on first run. You can also use `HomeMatch.ipynb` to inspect and regenerate the dataset.
 
 ### 4. Run the agent
 
