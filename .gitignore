@@ -1,0 +1,25 @@
+# Secrets
+.env
+
+# IDE
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Vector DB (generated data)
+db/
+
+# Data (generated)
+data/home.csv
