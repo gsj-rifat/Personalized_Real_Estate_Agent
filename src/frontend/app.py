@@ -1,6 +1,7 @@
 import asyncio
 import streamlit as st
 
+from src.adapters.listing_generator import LLMHomeListingGenerator
 from src.core.entities.models import BuyerPreferences
 from src.infrastructure.container import AppContainer
 from src.infrastructure.config import get_settings
@@ -41,6 +42,11 @@ async def _run_recommendation(preferences: BuyerPreferences) -> str:
     await container.ensure_home_listings()
     result = await container.engine.recommend(preferences)
     return result.answer
+
+
+async def _regenerate_listings() -> None:
+    generator = LLMHomeListingGenerator(settings=get_settings())
+    await generator.generate_home_listings()
 
 
 def _question_step(step: int) -> None:
@@ -116,6 +122,12 @@ def main() -> None:
     st.title("HomeMatch - Personalized Real Estate Assistant")
     st.caption("Recruiter demo UI built with Streamlit")
     _init_state()
+    with st.sidebar:
+        st.header("Data Controls")
+        if st.button("Regenerate Listings", use_container_width=True):
+            with st.spinner("Regenerating listings with LLM..."):
+                asyncio.run(_regenerate_listings())
+            st.success("Listings regenerated.")
 
     if st.session_state.step < len(QUESTIONS):
         _question_step(st.session_state.step)
